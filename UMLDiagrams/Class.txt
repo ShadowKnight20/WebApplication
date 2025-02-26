@@ -1,0 +1,78 @@
+@startuml
+
+
+
+abstract class Account
+abstract class WebSearch
+abstract class OpenVerseAPI
+class Actions
+interface Details
+interface Filter
+
+interface Save
+interface Retrive
+interface Delete
+
+interface Download
+interface Play
+interface Rating
+
+
+Details o-- Account
+
+WebSearch o--  Account
+Account -- WebApp
+OpenVerseAPI *-- WebApp
+WebSearch -- OpenVerseAPI
+Filter o-- WebSearch
+Actions -- OpenVerseAPI
+
+Save .. OpenVerseAPI
+Retrive .. OpenVerseAPI
+Delete .. OpenVerseAPI
+
+Download .. OpenVerseAPI
+Play .. OpenVerseAPI
+Rating .. OpenVerseAPI
+
+class WebApp 
+{
+}
+
+
+class Account
+{
+string UserName
+string Password
+}
+class Details 
+{
+string Address
+int PhoneNumber
+}
+class WebSearch 
+{
+string Save
+string Retrive
+string Delete
+}
+class OpenVerseAPI 
+{
+string Music
+string Images
+}
+interface Filter
+{
+int Date
+double Rating
+int Downloads
+}
+class Actions{
+bool Download
+bool Play
+int Rate
+}
+
+
+
+@enduml

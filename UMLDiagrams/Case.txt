@@ -1,0 +1,64 @@
+@startuml
+left to right direction
+
+actor Customer as c
+package Professional {
+  actor "Employee" as e
+}
+package WebApplication {
+  usecase "Create Account" as UC1
+  
+  usecase "LogIn" as UC2
+  
+  usecase "Search" as UC3
+  
+    usecase "Save" as UC4a
+    usecase "Delete" as UC4b
+    usecase "Retrive" as UC4c
+    
+     usecase "Filter" as UC4d
+     
+     usecase "By Date" as UC4d1
+     usecase "By Rating" as UC4d2
+     usecase "By Downloads" as UC4d3
+  
+  usecase "Locate Media for interaction" as UC4
+  
+  usecase "Download" as UC5a
+  usecase "Rate" as UC5b
+  usecase "Play" as UC5c
+  
+  
+  
+}
+c --> UC1
+c --> UC2
+
+UC1 ..> UC2
+
+UC2 --> UC3
+
+UC3 .. UC4a
+UC3 .. UC4b
+UC3 .. UC4c
+
+UC3 .. UC4d
+
+UC4d ..  UC4d1
+UC4d ..  UC4d2
+UC4d ..  UC4d3
+
+UC4d1 .. UC4
+UC4d2 .. UC4
+UC4d3 .. UC4
+
+
+
+UC3 --> UC4
+
+UC4 ..> UC5a
+UC4 ..> UC5b
+UC4 ..> UC5c
+
+@enduml
+
