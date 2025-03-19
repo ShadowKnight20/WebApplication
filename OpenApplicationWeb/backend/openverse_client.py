@@ -1,4 +1,4 @@
-from config import db
+import requests
 import time
 from typing import Dict, Any, Optional, List
 
@@ -43,7 +43,7 @@ class OpenverseClient:
         }
         try:
             # Send data as form data, not JSON
-            response = db.post(auth_url, headers=headers, data=data)
+            response = requests.post(auth_url, headers=headers, data=data)
             response.raise_for_status()
 
             token_data = response.json()
@@ -54,7 +54,7 @@ class OpenverseClient:
 
             return self.access_token
 
-        except db.exceptions.RequestException as e:
+        except requests.exceptions.RequestException as e:
             print(f"Error getting auth token: {e} {response.text}")
             return None
 
@@ -103,11 +103,11 @@ class OpenverseClient:
             params["tags"] = ",".join(tags)
 
         try:
-            response = db.get(search_url, headers=headers, params=params)
+            response = requests.get(search_url, headers=headers, params=params)
             response.raise_for_status()
             return response.json()
 
-        except db.exceptions.RequestException as e:
+        except requests.exceptions.RequestException as e:
             return {"error": f"Error searching images: {str(e)}"}
 
 # Usage example:
