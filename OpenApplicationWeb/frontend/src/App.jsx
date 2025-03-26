@@ -3,43 +3,39 @@ import ContactList from "./ContactList";
 import "./App.css";
 import ContactForm from "./ContactForm";
 import ImageSearch from "./ImageSearch";
+export default App;  // Ensure you're using 'export default' here
 
 function App() {
-  const [contacts, setContacts] = useState([]); // Added state for contacts
+  const [contacts, setContacts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentContact, setCurrentContact] = useState({});
   const [activeTab, setActiveTab] = useState('contacts');
-  
+
   useEffect(() => {
     fetchContacts();
   }, []);
-
   const fetchContacts = async () => {
     const response = await fetch("http://127.0.0.1:5000/contacts");
     const data = await response.json();
     setContacts(data.contacts);
     console.log(data.contacts);
   };
-
   const closeModal = () => {
-    setIsModalOpen(false);
-    setCurrentContact({});
-  };
-
+    setIsModalOpen(false)
+    setCurrentContact({})
+  }
   const openCreateModal = () => {
-    if (!isModalOpen) setIsModalOpen(true);
-  };
-
+    if (!isModalOpen) setIsModalOpen(true)
+  }
   const openEditModal = (contact) => {
-    if (isModalOpen) return;
-    setCurrentContact(contact);
-    setIsModalOpen(true);
-  };
-
+    if (isModalOpen) return
+    setCurrentContact(contact)
+    setIsModalOpen(true)
+  }
   const onUpdate = () => {
-    closeModal();
-    fetchContacts();
-  };
+    closeModal()
+    fetchContacts()
+  }
 
   return (
     <>
@@ -60,14 +56,13 @@ function App() {
 
       {activeTab === 'contacts' && (
         <div className="contacts-tab">
-          <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate} />
+          <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate}/>
           <button onClick={openCreateModal}>Create New Contact</button>
-
           {isModalOpen && (
             <div className="modal">
               <div className="modal-content">
                 <span className="close" onClick={closeModal}>&times;</span>
-                <ContactForm existingContact={currentContact} updateCallback={onUpdate} />
+                <ContactForm existingContact={currentContact} updateCallback={onUpdate}/>
               </div>
             </div>
           )}
@@ -81,6 +76,5 @@ function App() {
       )}
     </>
   );
+  
 }
-
-export default App;
