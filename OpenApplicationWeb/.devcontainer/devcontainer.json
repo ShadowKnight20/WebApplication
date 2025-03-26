@@ -1,6 +1,9 @@
 {
   "name": "Basic Web Application",
-  "image": "mcr.microsoft.com/devcontainers/python:3.10",
+  //"image": "mcr.microsoft.com/devcontainers/python:3.10",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "frontend",
+  "workspaceFolder": "/workspace",
   // "settings": {
   //   "terminal.integrated.shell.linux": "/bin/bash"
   // },
@@ -22,7 +25,7 @@
         "python.linting.pylintEnabled": true
       }
     }
-  },
+  }//,
   // "postCreateCommand": "pip install -r requirements.txt && cd frontend && npm install",
-  "remoteUser": "vscode"
+  //"remoteUser": "vscode"
 }
