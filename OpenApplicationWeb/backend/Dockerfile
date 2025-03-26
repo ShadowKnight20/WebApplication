@@ -9,6 +9,9 @@ COPY requirements.txt .
 # Install the Python dependencies
 RUN pip install -r requirements.txt
 
+RUN pip install flask 
+
+RUN pip install requests
 # Copy the entire backend code into the container
 COPY . .
 

@@ -5,6 +5,7 @@ from models import Contact
 from OpenverseAPIClient import OpenverseClient
 
 
+
 @app.route("/contacts", methods=["GET"])
 def get_contacts():
     contacts = Contact.query.all()
