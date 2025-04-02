@@ -2,8 +2,9 @@ import json
 import pytest
 
 def test_get_contacts(client, sample_contacts):
-    #"""Test retrieving all contacts."""
+    """Test retrieving all contacts."""
     response = client.get('/contacts')
+    print(">>>", response.data)
     data = json.loads(response.data)
 
     assert response.status_code == 200
@@ -11,17 +12,17 @@ def test_get_contacts(client, sample_contacts):
     assert data['contacts'][0]['firstName'] == 'John'
 
 def test_create_contact(client):
-    #"""Test creating a new contact."""
+    """Test creating a new contact."""
     new_contact = {
         "firstName": "Test",
         "lastName": "User",
         "email": "test@example.com"
     }
 
-    response = client.post('/create_contact',
-                data=json.dumps(new_contact),
-                content_type='application/json')
-    
+    response = client.post('/create_contact', 
+                          data=json.dumps(new_contact),
+                          content_type='application/json')
+
     assert response.status_code == 201
 
     # Verify the contact was created
@@ -31,7 +32,7 @@ def test_create_contact(client):
     assert "test@example.com" in emails
 
 def test_update_contact(client, sample_contacts):
-    #"""Test updating an existing contact."""
+    """Test updating an existing contact."""
     # Get the ID of the first contact
     response = client.get('/contacts')
     data = json.loads(response.data)
@@ -44,8 +45,8 @@ def test_update_contact(client, sample_contacts):
     }
 
     response = client.patch(f'/update_contact/{contact_id}',
-                data=json.dumps(updated_contact),
-                content_type='application/json')
+                           data=json.dumps(updated_contact),
+                           content_type='application/json')
 
     assert response.status_code == 200
 
@@ -56,9 +57,9 @@ def test_update_contact(client, sample_contacts):
         if contact['id'] == contact_id:
             assert contact['firstName'] == "UpdatedName"
             assert contact['email'] == "updated@example.com"
-def test_delete_contact(client, sample_contacts):
 
-    #"""Test deleting a contact."""
+def test_delete_contact(client, sample_contacts):
+    """Test deleting a contact."""
     # Get the ID of the first contact
     response = client.get('/contacts')
     data = json.loads(response.data)
@@ -73,3 +74,27 @@ def test_delete_contact(client, sample_contacts):
     get_response = client.get('/contacts')
     data = json.loads(get_response.data)
     assert len(data['contacts']) == initial_count - 1
+
+def test_search_images(client, monkeypatch):
+    """Test the search_images endpoint with a mocked OpenverseClient."""
+    # Mock the OpenverseClient.search_images method
+    from OpenverseAPIClient import OpenverseClient
+
+    mock_results = {
+        "results": [
+            {"title": "Test Image", "url": "http://example.com/image.jpg"}
+        ]
+    }
+
+    def mock_search_images(*args, **kwargs):
+        return mock_results
+
+    # Apply the monkeypatch
+    monkeypatch.setattr(OpenverseClient, "search_images", mock_search_images)
+
+    # Test the endpoint
+    response = client.get('/search_images?q=test')
+    assert response.status_code == 200
+
+    data = json.loads(response.data)
+    assert data == mock_results
