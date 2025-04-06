@@ -1,0 +1,34 @@
+@startuml
+actor Customer
+participant "WebApp" as WebApp
+participant "Account" as Account
+participant "WebSearch" as WebSearch
+participant "OpenVerseAPI" as OpenVerseAPI
+participant "Actions" as Actions
+
+== Account Login ==
+Customer -> WebApp : Open login page
+Customer -> WebApp : Enter username & password
+WebApp -> Account : validateCredentials(username, password)
+Account --> WebApp : valid/invalid
+WebApp --> Customer : Show success or error
+
+== Search and Filter ==
+Customer -> WebApp : Enter search query
+WebApp -> WebSearch : search(query)
+WebSearch -> OpenVerseAPI : fetchResults(query)
+OpenVerseAPI --> WebSearch : mediaList
+WebSearch -> Filter : applyFilter(rating)
+Filter --> WebSearch : filteredList
+WebSearch --> WebApp : filteredList
+WebApp --> Customer : Display results
+
+== Play Media ==
+Customer -> WebApp : Select media to play
+WebApp -> Actions : playMedia(mediaId)
+Actions -> OpenVerseAPI : streamMedia(mediaId)
+OpenVerseAPI --> Actions : streamData
+Actions --> WebApp : stream ready
+WebApp --> Customer : Play media
+
+@enduml
