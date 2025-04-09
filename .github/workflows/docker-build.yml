@@ -21,7 +21,7 @@ jobs:
 
       # Build the Docker image for the backend
       - name: Build backend image
-        run: docker build -t myusername/backend-app:latest ./backend
+        run: docker build -t kperovs15/backend-app:latest ./backend
         # Replace 'myusername' with your Docker Hub username or another identifier
         # The tag ':latest' is common, but you could use commit SHA, etc.
 
@@ -38,5 +38,5 @@ jobs:
 
       # Build the Docker image for the frontend
       - name: Build frontend image
-        run: docker build -t myusername/frontend-app:latest ./frontend
+        run: docker build -t kperovs15/frontend-app:latest ./frontend
         # Replace 'myusername' with your Docker Hub username or another identifier
