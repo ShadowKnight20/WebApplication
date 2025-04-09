@@ -11,11 +11,11 @@ jobs:
     steps:
       # Step 1: Check out the repository code
       - name: Check out code
-        uses: OpenApplicationWeb/actions/checkout@v4
+        uses: actions/checkout@v4
 
       # Step 2: Set up Node.js environment
       - name: Set up Node.js
-        uses: OpenApplicationWeba/ctions/setup-node@v4 # Use the official Node.js setup action
+        uses: actions/setup-node@v4 # Use the official Node.js setup action
         with:
           node-version: '22' # Specify Node.js version matching your project
 
