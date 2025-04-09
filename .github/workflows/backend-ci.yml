@@ -27,4 +27,4 @@ jobs:
           pip install -r OpenApplicationWeb/backend/test-requirements.txt
 
       - name: Run backend tests
-        run: pytest backend/tests/ # Pytest (or the underlying code) should pick up the env var
+        run: pytest OpenApplicationWeb/backend/tests/ # Pytest (or the underlying code) should pick up the env var
