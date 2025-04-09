@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 const ImageSearch = () => {
     const [query, setQuery] = useState("");
