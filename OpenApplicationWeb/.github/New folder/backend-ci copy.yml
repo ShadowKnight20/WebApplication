@@ -1,0 +1,30 @@
+# .github/workflows/backend-ci.yml
+name: Backend CI Test
+
+on: [push, pull_request]
+
+jobs:
+  test-backend:
+    name: Test Backend Code
+    runs-on: ubuntu-latest
+
+    # Add this env block to expose the secret as an environment variablec
+    env:
+      OPENVERSE_API_KEY: ${{ secrets.OPENVERSE_API_KEY }} # Access the secret
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r OpenApplicationWeb/backend/test-requirements.txt
+
+      - name: Run backend tests
+        run: pytest OpenApplicationWeb/backend/tests/ # Pytest (or the underlying code) should pick up the env var
