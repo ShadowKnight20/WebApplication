@@ -1,5 +1,5 @@
 # .github/workflows/docker-build.yml
-name: Docker Build
+name: Docker Build Test
 
 # Trigger only on pushes to the main branch
 on:
