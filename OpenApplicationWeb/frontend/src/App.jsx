@@ -4,6 +4,7 @@ import "./App.css";
 import ContactForm from "./ContactForm";
 import ImageSearch from "./ImageSearch";
 export default App;  // Ensure you're using 'export default' here
+import React from 'react';
 
 function App() {
   const [contacts, setContacts] = useState([]);
