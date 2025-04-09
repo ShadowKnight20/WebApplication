@@ -8,7 +8,7 @@ jobs:
     name: Test Backend Code
     runs-on: ubuntu-latest
 
-    # Add this env block to expose the secret as an environment variable
+    # Add this env block to expose the secret as an environment variablec
     env:
       OPENVERSE_API_KEY: ${{ secrets.OPENVERSE_API_KEY }} # Access the secret
 
