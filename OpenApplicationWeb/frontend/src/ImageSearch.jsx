@@ -1,47 +1,40 @@
 import React, { useState } from "react";
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 const ImageSearch = () => {
     const [query, setQuery] = useState("");
-    const [images, setImages] = useState([]);  // Initialize as an empty array
+    const [images, setImages] = useState([]);  // Initialize as an empty array instead of undefined
     const [error, setError] = useState(null);
 
     const handleSearch = async () => {
         try {
-            // Log the query for debugging
-            console.log("Searching for:", query);
-
-            // Fetch images based on the search query
+            // Changed from query to q to match the backend expectation
             const response = await fetch(`http://localhost:5000/search_images?q=${query}`);
-
-            // Check if the response is successful
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            // Log the response data for debugging
             const data = await response.json();
-            console.log("API Response Data:", data);
 
-            // Check if the API returns images
-            if (data.results && data.results.length > 0) {
+            // The API returns results in a nested structure, so we need to extract the actual images
+            if (data.results) {
                 setImages(data.results.map(img => ({
                     url: img.thumbnail || img.url,
                     title: img.title || 'Untitled Image'
                 })));
-                setError(null);  // Clear any previous errors
             } else {
                 setImages([]);
-                setError("No images found for your search.");
             }
+            setError(null);
         } catch (e) {
-            // Log the error and set the error message
             console.error("Error fetching images:", e);
             setError("Error fetching images. Please try again.");
-            setImages([]);  // Set to an empty array on error
+            setImages([]);  // Set as empty array on error
         }
     };
 
     return (
+<<<<<<< HEAD
+<<<<<<< HEAD
         <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
             <h2>Image Search</h2>
             <div style={{ marginBottom: "20px" }}>
@@ -107,6 +100,42 @@ const ImageSearch = () => {
                                 fontWeight: "bold",
                                 color: "#333"
                             }}>{image.title}</p>
+=======
+        <div>
+            <h2>Image Search</h2>
+            <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search for images..."
+            />
+            <button onClick={handleSearch}>Search</button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+                {images.length > 0 ? (
+                    images.map((image, index) => (
+                        <div key={index}>
+                            <img src={image.url} alt={image.title} style={{ maxWidth: "100%" }} />
+                            <p>{image.title}</p>
+>>>>>>> parent of 39cb64d (Update Image)
+=======
+        <div>
+            <h2>Image Search</h2>
+            <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search for images..."
+            />
+            <button onClick={handleSearch}>Search</button>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+                {images.length > 0 ? (
+                    images.map((image, index) => (
+                        <div key={index}>
+                            <img src={image.url} alt={image.title} style={{ maxWidth: "100%" }} />
+                            <p>{image.title}</p>
+>>>>>>> parent of 39cb64d (Update Image)
                         </div>
                     ))
                 ) : (
@@ -117,4 +146,4 @@ const ImageSearch = () => {
     );
 };
 
-export default ImageSearch;
+export default ImageSearch; 
