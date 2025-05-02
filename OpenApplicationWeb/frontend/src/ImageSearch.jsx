@@ -33,7 +33,6 @@ const ImageSearch = () => {
     };
 
     return (
-<<<<<<< HEAD
         <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
             <h2>Image Search</h2>
             <div style={{ marginBottom: "20px" }}>
@@ -99,24 +98,6 @@ const ImageSearch = () => {
                                 fontWeight: "bold",
                                 color: "#333"
                             }}>{image.title}</p>
-=======
-        <div>
-            <h2>Image Search</h2>
-            <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search for images..."
-            />
-            <button onClick={handleSearch}>Search</button>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
-                {images.length > 0 ? (
-                    images.map((image, index) => (
-                        <div key={index}>
-                            <img src={image.url} alt={image.title} style={{ maxWidth: "100%" }} />
-                            <p>{image.title}</p>
->>>>>>> parent of 39cb64d (Update Image)
                         </div>
                     ))
                 ) : (
@@ -127,4 +108,4 @@ const ImageSearch = () => {
     );
 };
 
-export default ImageSearch; 
+export default ImageSearch;
