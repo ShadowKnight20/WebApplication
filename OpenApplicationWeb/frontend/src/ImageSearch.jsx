@@ -33,22 +33,71 @@ const ImageSearch = () => {
     };
 
     return (
-        <div>
+        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
             <h2>Image Search</h2>
-            <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search for images..."
-            />
-            <button onClick={handleSearch}>Search</button>
+            <div style={{ marginBottom: "20px" }}>
+                <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search for images..."
+                    style={{
+                        padding: "10px",
+                        fontSize: "16px",
+                        width: "300px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc"
+                    }}
+                />
+                <button
+                    onClick={handleSearch}
+                    style={{
+                        padding: "10px 15px",
+                        fontSize: "16px",
+                        marginLeft: "10px",
+                        backgroundColor: "#007bff",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer"
+                    }}
+                >
+                    Search
+                </button>
+            </div>
             {error && <p style={{ color: "red" }}>{error}</p>}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                gap: "15px",
+                marginTop: "20px"
+            }}>
                 {images.length > 0 ? (
                     images.map((image, index) => (
-                        <div key={index}>
-                            <img src={image.url} alt={image.title} style={{ maxWidth: "100%" }} />
-                            <p>{image.title}</p>
+                        <div key={index} style={{
+                            border: "1px solid #ddd",
+                            borderRadius: "8px",
+                            padding: "10px",
+                            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                            textAlign: "center",
+                            backgroundColor: "#fff",
+                            transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                        }}>
+                            <img
+                                src={image.url}
+                                alt={image.title}
+                                style={{
+                                    width: "100%",
+                                    borderRadius: "8px",
+                                    objectFit: "cover",
+                                    height: "200px"
+                                }}
+                            />
+                            <p style={{
+                                marginTop: "10px",
+                                fontWeight: "bold",
+                                color: "#333"
+                            }}>{image.title}</p>
                         </div>
                     ))
                 ) : (
@@ -59,4 +108,4 @@ const ImageSearch = () => {
     );
 };
 
-export default ImageSearch; 
+export default ImageSearch;
