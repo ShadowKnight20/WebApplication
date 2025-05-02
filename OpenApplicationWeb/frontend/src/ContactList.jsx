@@ -3,52 +3,83 @@ import React from "react";
 const ContactList = ({ contacts, updateContact, updateCallback }) => {
   const onDelete = async (id) => {
     try {
-      const options = {
-        method: "DELETE",
-      };
       const response = await fetch(
         `http://127.0.0.1:5000/delete_contact/${id}`,
-        options
+        { method: "DELETE" }
       );
-
       if (response.status === 200) {
         updateCallback();
       } else {
         console.error("Failed to delete contact:", await response.json());
-        // Optionally handle error in frontend (e.g., display message)
       }
     } catch (error) {
       console.error("Error deleting contact:", error);
-      // Optionally handle error in frontend (e.g., display message)
     }
   };
 
   return (
-    <div>
-      <h2>Contacts</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contacts.map((contact) => (
-            <tr key={contact.id}>
-              <td>{contact.firstName}</td>
-              <td>{contact.lastName}</td>
-              <td>{contact.email}</td>
-              <td>
-                <button onClick={() => updateContact(contact)}>Update</button>
-                <button onClick={() => onDelete(contact.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h2 style={{ marginBottom: "20px" }}>Contact List</h2>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+          gap: "20px",
+        }}
+      >
+        {contacts.map((contact) => (
+          <div
+            key={contact.id}
+            style={{
+              border: "1px solid #ddd",
+              borderRadius: "10px",
+              padding: "20px",
+              backgroundColor: "#fff",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <p style={{ marginBottom: "8px" }}>
+              <strong>First Name:</strong> {contact.firstName}
+            </p>
+            <p style={{ marginBottom: "8px" }}>
+              <strong>Last Name:</strong> {contact.lastName}
+            </p>
+            <p style={{ marginBottom: "16px" }}>
+              <strong>Email:</strong> {contact.email}
+            </p>
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button
+                onClick={() => updateContact(contact)}
+                style={{
+                  flex: 1,
+                  padding: "8px 12px",
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Update
+              </button>
+              <button
+                onClick={() => onDelete(contact.id)}
+                style={{
+                  flex: 1,
+                  padding: "8px 12px",
+                  backgroundColor: "#dc3545",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "5px",
+                  cursor: "pointer",
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
