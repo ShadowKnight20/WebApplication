@@ -2,39 +2,59 @@ import React, { useState } from "react";
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 
 const ImageSearch = () => {
-    const [query, setQuery] = useState("");
-    const [images, setImages] = useState([]);  // Initialize as an empty array instead of undefined
-    const [error, setError] = useState(null);
+    const [query, setQuery] = useState("");  // The search query
+    const [images, setImages] = useState([]);  // List of images returned by the API
+    const [error, setError] = useState(null);  // Any error message
+    const [filter, setFilter] = useState({
+        type: "",  // Filter by image type (e.g., photo, illustration)
+        sort: "relevance",  // Sort by relevance or date
+        size: "",  // Filter by image size (e.g., small, medium, large)
+        dateRange: "",  // Filter by date range (e.g., last week, last month)
+    });
 
     const handleSearch = async () => {
         try {
-            // Changed from query to q to match the backend expectation
-            const response = await fetch(`http://localhost:5000/search_images?q=${query}`);
+            const filterParams = new URLSearchParams({
+                q: query,
+            });
+            
+            if (filter.type) filterParams.append("type", filter.type);
+            if (filter.sort) filterParams.append("sort", filter.sort);
+            if (filter.size) filterParams.append("size", filter.size);
+            if (filter.dateRange) filterParams.append("dateRange", filter.dateRange);
+            
+            console.log(`Fetching from: http://localhost:5000/search_images?${filterParams.toString()}`);
+            
+            const response = await fetch(`http://localhost:5000/search_images?${filterParams.toString()}`);
+    
             if (!response.ok) {
+                const errorDetails = await response.text();
+                console.error("Server Error Details:", errorDetails);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+    
             const data = await response.json();
-
-            // The API returns results in a nested structure, so we need to extract the actual images
-            if (data.results) {
+            if (data.results && data.results.length > 0) {
                 setImages(data.results.map(img => ({
                     url: img.thumbnail || img.url,
                     title: img.title || 'Untitled Image'
                 })));
+                setError(null);
             } else {
                 setImages([]);
+                setError("No images found for your search.");
             }
-            setError(null);
         } catch (e) {
             console.error("Error fetching images:", e);
             setError("Error fetching images. Please try again.");
-            setImages([]);  // Set as empty array on error
+            setImages([]);
         }
     };
+    
 
     return (
         <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-            <h2>Image Search</h2>
+            <h2>Advanced Image Search</h2>
             <div style={{ marginBottom: "20px" }}>
                 <input
                     type="text"
@@ -65,7 +85,56 @@ const ImageSearch = () => {
                     Search
                 </button>
             </div>
+
+            {/* Filter Options */}
+            <div style={{ marginBottom: "20px" }}>
+                <select
+                    value={filter.type}
+                    onChange={(e) => setFilter({ ...filter, type: e.target.value })}
+                    style={{ padding: "10px", marginRight: "10px" }}
+                >
+                    <option value="">All Types</option>
+                    <option value="photo">Photo</option>
+                    <option value="illustration">Illustration</option>
+                    <option value="icon">Icon</option>
+                </select>
+
+                <select
+                    value={filter.sort}
+                    onChange={(e) => setFilter({ ...filter, sort: e.target.value })}
+                    style={{ padding: "10px", marginRight: "10px" }}
+                >
+                    <option value="relevance">Sort by Relevance</option>
+                    <option value="date">Sort by Date</option>
+                </select>
+
+                <select
+                    value={filter.size}
+                    onChange={(e) => setFilter({ ...filter, size: e.target.value })}
+                    style={{ padding: "10px", marginRight: "10px" }}
+                >
+                    <option value="">Any Size</option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                </select>
+
+                <select
+                    value={filter.dateRange}
+                    onChange={(e) => setFilter({ ...filter, dateRange: e.target.value })}
+                    style={{ padding: "10px" }}
+                >
+                    <option value="">Any Date</option>
+                    <option value="last_week">Last Week</option>
+                    <option value="last_month">Last Month</option>
+                    <option value="last_year">Last Year</option>
+                </select>
+            </div>
+
+            {/* Error Message */}
             {error && <p style={{ color: "red" }}>{error}</p>}
+
+            {/* Images Grid */}
             <div style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
@@ -80,8 +149,7 @@ const ImageSearch = () => {
                             padding: "10px",
                             boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                             textAlign: "center",
-                            backgroundColor: "#fff",
-                            transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                            backgroundColor: "#fff"
                         }}>
                             <img
                                 src={image.url}
