@@ -62,6 +62,10 @@ def search_images():
     - license: Filter by license type
     - creator: Filter by creator
     - tags: Comma-separated list of tags
+    - type: Filter by image type (e.g., photo, illustration, icon)
+    - sort: Sort by relevance or date
+    - size: Filter by image size (small, medium, large)
+    - date_range: Filter by date range (e.g., last week, last month, last year)
     """
     query = request.args.get("q")
     if not query:
@@ -71,22 +75,44 @@ def search_images():
     page_size = request.args.get("page_size", 20, type=int)
     license_type = request.args.get("license")
     creator = request.args.get("creator")
+    tags = request.args.get("tags")
+    image_type = request.args.get("type")
+    sort = request.args.get("sort", "relevance")
+    size = request.args.get("size")
+    date_range = request.args.get("date_range")
 
     # Handle tags as a comma-separated list
-    tags = request.args.get("tags")
     if tags:
         tags = tags.split(",")
 
-    results = ov_client.search_images(
-        query=query,
-        page=page,
-        page_size=page_size,
-        license_type=license_type,
-        creator=creator,
-        tags=tags
-    )
+    # Build the filters for the OpenVerse API
+    filters = {
+        "query": query,
+        "page": page,
+        "page_size": page_size,
+        "license": license_type,
+        "creator": creator,
+        "tags": tags,
+        "type": image_type,
+        "sort": sort,
+        "size": size,
+        "date_range": date_range,
+    }
 
-    return jsonify(results)
+    # Remove any filters with None values
+    filters = {key: value for key, value in filters.items() if value is not None}
+
+    try:
+        # Perform the search with the filters
+        results = ov_client.search_images(**filters)
+
+        if not results:
+            return jsonify({"error": "No results found"}), 404
+
+        return jsonify(results)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 
