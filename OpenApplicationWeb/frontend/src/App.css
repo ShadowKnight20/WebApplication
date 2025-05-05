@@ -1,4 +1,4 @@
-.modal {
+/*.modal {
     position: fixed;
     z-index: 1;
     left: 0;
@@ -22,4 +22,40 @@
     float : right;
     font-size: 28px;
     font-weight: bold;
-}
+}*/
+
+.auth-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .auth-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .auth-button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .auth-link {
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
