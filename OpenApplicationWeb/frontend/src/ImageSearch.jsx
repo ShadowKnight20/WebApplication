@@ -1,48 +1,62 @@
-import React, { useState } from "react";
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import React, { useState, useEffect } from "react";
 
 const ImageSearch = () => {
-    const [query, setQuery] = useState("");  // The search query
-    const [images, setImages] = useState([]);  // List of images returned by the API
-    const [error, setError] = useState(null);  // Any error message
+    const [query, setQuery] = useState(""); // The search query
+    const [images, setImages] = useState([]); // List of images returned by the API
+    const [error, setError] = useState(null); // Any error message
     const [filter, setFilter] = useState({
-        type: "",  // Filter by image type (e.g., photo, illustration)
-        sort: "relevance",  // Sort by relevance or date
-        size: "",  // Filter by image size (e.g., small, medium, large)
-        dateRange: "",  // Filter by date range (e.g., last week, last month)
+        type: "", // Filter by image type (e.g., photo, illustration)
+        sort: "relevance", // Sort by relevance or date
+        size: "", // Filter by image size (e.g., small, medium, large)
+        dateRange: "", // Filter by date range (e.g., last week, last month)
     });
+    const [searchHistory, setSearchHistory] = useState([]); // Recent search history
+    const [isHistoryVisible, setIsHistoryVisible] = useState(false); // Toggle history visibility
+
+    useEffect(() => {
+        // Load search history from localStorage when the component mounts
+        const storedHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+        setSearchHistory(storedHistory);
+    }, []);
 
     const handleSearch = async () => {
         try {
             const filterParams = new URLSearchParams({
                 q: query,
             });
-            
+
             if (filter.type) filterParams.append("type", filter.type);
             if (filter.sort) filterParams.append("sort", filter.sort);
             if (filter.size) filterParams.append("size", filter.size);
             if (filter.dateRange) filterParams.append("dateRange", filter.dateRange);
-            
+
             console.log(`Fetching from: http://localhost:5000/search_images?${filterParams.toString()}`);
-            
+
             const response = await fetch(`http://localhost:5000/search_images?${filterParams.toString()}`);
-    
+
             if (!response.ok) {
                 const errorDetails = await response.text();
                 console.error("Server Error Details:", errorDetails);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-    
+
             const data = await response.json();
             if (data.results && data.results.length > 0) {
                 setImages(data.results.map(img => ({
                     url: img.thumbnail || img.url,
-                    title: img.title || 'Untitled Image'
+                    title: img.title || 'Untitled Image',
                 })));
                 setError(null);
             } else {
                 setImages([]);
                 setError("No images found for your search.");
+            }
+
+            // Add the current search to history, ensuring it's unique and within a limit of 10
+            if (query.trim() !== "") {
+                const newHistory = [query, ...searchHistory.filter((search) => search !== query)].slice(0, 10);
+                setSearchHistory(newHistory);
+                localStorage.setItem("searchHistory", JSON.stringify(newHistory));
             }
         } catch (e) {
             console.error("Error fetching images:", e);
@@ -50,7 +64,26 @@ const ImageSearch = () => {
             setImages([]);
         }
     };
-    
+
+    const handleSelectHistoryItem = (item) => {
+        setQuery(item);
+        handleSearch(); // Perform search again with the selected history item
+    };
+
+    const handleClearHistory = () => {
+        setSearchHistory([]);
+        localStorage.removeItem("searchHistory");
+    };
+
+    const handleClearHistoryItem = (item) => {
+        const updatedHistory = searchHistory.filter(search => search !== item);
+        setSearchHistory(updatedHistory);
+        localStorage.setItem("searchHistory", JSON.stringify(updatedHistory));
+    };
+
+    const toggleHistoryVisibility = () => {
+        setIsHistoryVisible((prev) => !prev); // Toggle visibility of history list
+    };
 
     return (
         <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
@@ -85,6 +118,44 @@ const ImageSearch = () => {
                     Search
                 </button>
             </div>
+
+            {/* Show History Button */}
+            <button
+                onClick={toggleHistoryVisibility}
+                style={{
+                    padding: "10px 15px",
+                    backgroundColor: "#28a745",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    marginBottom: "20px",
+                }}
+            >
+                {isHistoryVisible ? "Hide Search History" : "Show Search History"}
+            </button>
+
+            {/* Search History List */}
+            {isHistoryVisible && searchHistory.length > 0 && (
+                <div style={{ marginBottom: "20px" }}>
+                    <h3>Search History</h3>
+                    <ul style={{ paddingLeft: "20px" }}>
+                        {searchHistory.map((historyItem, index) => (
+                            <li key={index} style={{ cursor: "pointer", color: "#007bff" }} onClick={() => handleSelectHistoryItem(historyItem)}>
+                                {historyItem}
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); handleClearHistoryItem(historyItem); }} 
+                                    style={{ marginLeft: "10px", color: "red", cursor: "pointer", background: "none", border: "none" }}>
+                                    X
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                    <button onClick={handleClearHistory} style={{ padding: "10px 15px", backgroundColor: "#dc3545", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}>
+                        Clear History
+                    </button>
+                </div>
+            )}
 
             {/* Filter Options */}
             <div style={{ marginBottom: "20px" }}>
